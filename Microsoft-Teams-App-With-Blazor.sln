@@ -9,11 +9,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamsAppServer", "TeamsAppServer\TeamsAppServer.csproj", "{AC07B30E-BAF7-446F-AB8C-C35D55BBE07F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsAppServer", "TeamsAppServer\TeamsAppServer.csproj", "{AC07B30E-BAF7-446F-AB8C-C35D55BBE07F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamsAppWasm", "TeamsAppWasm\TeamsAppWasm.csproj", "{06CCAE3D-3524-45A6-AFB6-3BA72A89A86E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamsAppWasm", "TeamsAppWasm\TeamsAppWasm.csproj", "{06CCAE3D-3524-45A6-AFB6-3BA72A89A86E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedComponents", "SharedComponents\SharedComponents.csproj", "{CB8EAC76-638E-4B03-9B01-D3BA229C79FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedComponents", "SharedComponents\SharedComponents.csproj", "{CB8EAC76-638E-4B03-9B01-D3BA229C79FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "npm", "npm", "{4EE13F5A-C22E-4ECA-8A9A-62C716847E7E}"
+	ProjectSection(SolutionItems) = preProject
+		package.json = package.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

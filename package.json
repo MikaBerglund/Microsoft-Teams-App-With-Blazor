@@ -1,0 +1,11 @@
+{
+  "name": "microsoft-teams-app-with-blazor",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@microsoft/teams-js": "^1.8.0"
+  }
+}
