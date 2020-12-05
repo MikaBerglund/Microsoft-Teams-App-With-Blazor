@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using SharedComponents.Model;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,8 +22,22 @@ namespace SharedComponents
 
         public async Task InitializeAsync()
         {
-            await this.JsInterop.InvokeVoidAsync("teamsBlazor.initialize");
-            await this.JsInterop.InvokeVoidAsync("teamsBlazor.notifySuccess");
+            await this.JsInterop.InvokeVoidAsync("microsoftTeams.initialize");
+        }
+
+        public async Task NotifyFailureAsync(string message = null)
+        {
+            await this.NotifyFailureAsync(new FailedRequest { message = message });
+        }
+
+        public async Task NotifyFailureAsync(FailedRequest reason)
+        {
+            await this.JsInterop.InvokeVoidAsync("microsoftTeams.appInitialization.notifyFailure", reason);
+        }
+
+        public async Task NotifySuccessAsync()
+        {
+            await this.JsInterop.InvokeVoidAsync("microsoftTeams.appInitialization.notifySuccess");
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -31,6 +47,7 @@ namespace SharedComponents
             if(firstRender && this.AutoInitialize)
             {
                 await this.InitializeAsync();
+                await this.NotifySuccessAsync();
             }
         }
     }
