@@ -9,5 +9,7 @@ namespace SharedComponents.Api
 
         public Context Context { get; set; }
 
+        public TokenCache TokenCache { get; set; }
+
     }
 }

@@ -30,11 +30,15 @@ window.blazorTeams = {
         return blazorTeams.config;
     },
 
-    authenticate: function () {
+    authenticate: function (callbackTarget, methodName) {
         microsoftTeams.authentication.authenticate({
             url: window.location.origin + this.config.loginUrl,
             successCallback: function (result) {
                 console.log("Authentication success", result);
+
+                if (callbackTarget && methodName) {
+                    callbackTarget.invokeMethodAsync(methodName);
+                }
             },
             failureCallback: function (reason) {
                 console.error("Authentication fail", reason);

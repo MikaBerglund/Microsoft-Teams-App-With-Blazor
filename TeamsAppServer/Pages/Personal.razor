@@ -2,13 +2,22 @@
 @code {
     TeamsApplication app;
 }
-<TeamsApplication @ref="this.app">
+<TeamsApplication @ref="this.app" RequireAuthentication="true">
+    <SignInTemplate>
+        <p>We need you to log in before you can use this application. Click the button below to do so.</p>
+        <button @onclick="async () => { await this.app.SignInAsync(); }">Log in</button>
+    </SignInTemplate>
     <ApplicationTemplate Context="facade">
 
         <h3>Personal Page (Server)</h3>
 
         <ContextViewer Context="facade?.Context"></ContextViewer>
 
-        <LoginButton LoginHint="@facade.Context.LoginHint">Log in as @facade.Context.LoginHint</LoginButton>
+        <p>
+            Token expires (UTC): @facade?.TokenCache?.ExpireUtc
+        </p>
+        <p>
+            <button @onclick="async () => { await this.app.SignOutAsync(); }">Sign out</button>
+        </p>
     </ApplicationTemplate>
 </TeamsApplication>
