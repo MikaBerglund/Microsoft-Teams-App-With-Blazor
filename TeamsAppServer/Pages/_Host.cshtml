@@ -32,7 +32,11 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script src="https://alcdn.msftauth.net/browser/2.7.0/js/msal-browser.min.js" crossorigin="anonymous"></script>
     <script src="~/js/MicrosoftTeams.min.js"></script>
     <script src="_content/SharedComponents/blazor-teams.js"></script>
+
+    @* This script is excluded from source control. You need to add it to your application. See the SharedComponents/wwwroot/blazor-teams.js file for details. *@
+    <script src="~/js/config.local.js"></script>
 </body>
 </html>

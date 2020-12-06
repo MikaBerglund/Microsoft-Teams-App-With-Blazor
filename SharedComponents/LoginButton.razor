@@ -1,0 +1,12 @@
+﻿
+
+<button @onclick="async () => { await this.LoginAsync(); }">
+    @if(null != this.ChildContent)
+    {
+        @this.ChildContent;
+    }
+    else
+    {
+        <span>Log in</span>
+    }
+</button>

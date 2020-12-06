@@ -25,9 +25,11 @@ namespace SharedComponents
             private set;
         }
 
+        [Parameter]
+        public EventCallback AppInitialized { get; set; }
 
         [Parameter]
-        public EventCallback<EventArgs> Initialized { get; set; }
+        public EventCallback<Context> GotContext { get; set; }
 
         [Parameter]
         public RenderFragment<TeamsApplicationFacade> ApplicationTemplate { get; set; }
@@ -38,7 +40,7 @@ namespace SharedComponents
         public async Task OnAppInitializedAsync()
         {
             await this.JsInterop.InvokeVoidAsync("microsoftTeams.appInitialization.notifySuccess");
-            await this.Initialized.InvokeAsync(EventArgs.Empty);
+            await this.AppInitialized.InvokeAsync(null);
 
             await this.GetContextAsync();
         }
@@ -47,7 +49,11 @@ namespace SharedComponents
         public async Task OnGotContextAsync(JsonElement args)
         {
             this.FacadeBuilder.Context = new Context(args);
+            await this.GotContext.InvokeAsync(this.FacadeBuilder.Context);
+
             this.FinalizeApplicationFacade();
+
+            await Task.CompletedTask;
         }
 
 
