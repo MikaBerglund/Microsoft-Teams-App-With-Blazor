@@ -22,7 +22,7 @@ namespace SharedComponents
 
         protected async Task LoginAsync()
         {
-            await this.JsInterop.InvokeVoidAsync("blazorTeams.aad.login");
+            await this.JsInterop.InvokeVoidAsync("blazorTeams.authenticate");
         }
     }
 }

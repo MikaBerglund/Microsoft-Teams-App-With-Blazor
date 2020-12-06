@@ -13,11 +13,6 @@ window.blazorTeams = {
         // The client ID of your application (as registered in Azure AD)
         clientId: "00000000-0000-0000-0000-000000000000",
 
-        // The authority to use for authentication. If your application is a single-tenant
-        // application, you need to change 'common' to the identifier of your tenant, either
-        // the guid or name ([tenant name].onmicrosoft.com).
-        authority: "https://login.microsoftonline.com/common",
-
         redirectUri: "/",
 
         // The relative path to your page that initializes authentication.
@@ -26,8 +21,13 @@ window.blazorTeams = {
         // An array of scopes (permissions) that your application requires
         // on behalf of the user.
         scopes: [
-            "user.read"
+            "user.read",
+            "openid"
         ]
+    },
+
+    getConfig: function () {
+        return blazorTeams.config;
     },
 
     authenticate: function () {
@@ -39,6 +39,16 @@ window.blazorTeams = {
             failureCallback: function (reason) {
                 console.error("Authentication fail", reason);
             }
+        });
+    },
+
+    redirectToAuthority: function (nonce, state) {
+        microsoftTeams.getContext((ctx) => {
+            let url = "https://login.microsoftonline.com/" + ctx.tid + "/oauth2/v2.0/authorize?client_id=" + blazorTeams.config.clientId + "&response_type=id_token token&response_mode=fragment&redirect_uri=" + window.location.origin + blazorTeams.config.loginUrl + "&scope=" + blazorTeams.config.scopes.join(" ") + "&nonce=" + nonce + "&state=" + state + "&login_hint=" + ctx.loginHint;
+
+            console.log("Redirecting to authorization endpoint.", url);
+
+            window.location.assign(url);
         });
     },
 

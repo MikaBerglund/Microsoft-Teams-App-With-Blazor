@@ -2,8 +2,10 @@
 
 <TeamsApplication>
     <ApplicationTemplate Context="facade">
-        <h3>Authenticate (@facade.Context.LoginHint)</h3>
-
-
+        <LoginDialogHandler Context="@facade?.Context">
+            <p>
+                Processing authentication for @(facade?.Context?.LoginHint)...
+            </p>
+        </LoginDialogHandler>
     </ApplicationTemplate>
 </TeamsApplication>
