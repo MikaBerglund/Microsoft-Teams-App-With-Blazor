@@ -17,19 +17,15 @@ namespace SharedComponents
     {
         public TeamsApplication()
         {
-            this.ApplicationFacade = new TeamsApplicationFacade();
+            this.ApplicationContext = new BlazorAppContext();
         }
 
-        protected TeamsApplicationFacade ApplicationFacade
-        {
-            get;
-            private set;
-        }
+        protected BlazorAppContext ApplicationContext { get; private set; }
 
         protected bool ShowAuthentication { get; set; }
 
         [Parameter]
-        public RenderFragment<TeamsApplicationFacade> ApplicationTemplate { get; set; }
+        public RenderFragment<BlazorAppContext> ApplicationTemplate { get; set; }
 
         [Parameter]
         public RenderFragment SignInTemplate { get; set; }
@@ -67,7 +63,7 @@ namespace SharedComponents
         [JSInvokable]
         public async Task OnGotContextAsync(JsonElement args)
         {
-            this.ApplicationFacade.Context = new Context(args);
+            this.ApplicationContext.Context = new Context(args);
 
             await this.HandleTokensAsync();
 
@@ -107,7 +103,7 @@ namespace SharedComponents
 
         private async Task HandleTokensAsync()
         {
-            this.ApplicationFacade.TokenCache = null;
+            this.ApplicationContext.TokenCache = null;
             if (this.RequireAuthentication)
             {
                 var accessToken = await this.JsInterop.GetAccessTokenAsync();
@@ -118,7 +114,7 @@ namespace SharedComponents
                 this.ShowAuthentication = !isTokenValid;
                 if (isTokenValid)
                 {
-                    this.ApplicationFacade.TokenCache = new TokenCache
+                    this.ApplicationContext.TokenCache = new TokenCache
                     {
                         AccessToken = accessToken,
                         IdToken = idToken,

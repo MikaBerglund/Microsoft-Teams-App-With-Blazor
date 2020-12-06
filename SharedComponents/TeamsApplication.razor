@@ -7,13 +7,13 @@
     }
     else
     {
-        string loginText = this?.ApplicationFacade?.Context?.LoginHint?.Length > 0 ? $"Log in as {this.ApplicationFacade.Context.LoginHint}" : "Log in";
+        string loginText = this?.ApplicationContext?.Context?.LoginHint?.Length > 0 ? $"Log in as {this.ApplicationContext.Context.LoginHint}" : "Log in";
 
         <p>This application requires that you log in. Click the button below to start the sign in process.</p>
         <button @onclick="async () => { await this.SignInAsync(); }">@loginText</button>
     }
 }
-else if (null != this.ApplicationFacade)
+else if (null != this.ApplicationContext)
 {
-    @this.ApplicationTemplate(this.ApplicationFacade);
+    @this.ApplicationTemplate(this.ApplicationContext);
 }

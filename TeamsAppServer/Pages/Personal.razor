@@ -7,14 +7,14 @@
         <p>We need you to log in before you can use this application. Click the button below to do so.</p>
         <button @onclick="async () => { await this.app.SignInAsync(); }">Log in</button>
     </SignInTemplate>
-    <ApplicationTemplate Context="facade">
+    <ApplicationTemplate Context="ctx">
 
         <h3>Personal Page (Server)</h3>
 
-        <ContextViewer Context="facade?.Context"></ContextViewer>
+        <ContextViewer Context="ctx?.Context"></ContextViewer>
 
         <p>
-            Token expires (UTC): @facade?.TokenCache?.ExpireUtc
+            Token expires (UTC): @ctx?.TokenCache?.ExpireUtc
         </p>
         <p>
             <button @onclick="async () => { await this.app.SignOutAsync(); }">Sign out</button>

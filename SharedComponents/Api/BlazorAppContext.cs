@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SharedComponents.Api
 {
-    public class TeamsApplicationFacade
+    public class BlazorAppContext
     {
 
         public Context Context { get; set; }
