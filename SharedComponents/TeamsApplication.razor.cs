@@ -28,7 +28,7 @@ namespace SharedComponents
         public RenderFragment<BlazorAppContext> ApplicationTemplate { get; set; }
 
         [Parameter]
-        public RenderFragment SignInTemplate { get; set; }
+        public RenderFragment<BlazorAppContext> SignInTemplate { get; set; }
 
         [Parameter]
         public bool RequireAuthentication { get; set; }

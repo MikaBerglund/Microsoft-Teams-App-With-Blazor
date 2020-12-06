@@ -3,7 +3,7 @@
 {
     @if(null != this.SignInTemplate)
     {
-        @this.SignInTemplate;
+        @this.SignInTemplate(this.ApplicationContext);
     }
     else
     {
