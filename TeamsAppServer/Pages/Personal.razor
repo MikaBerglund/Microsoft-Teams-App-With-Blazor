@@ -1,11 +1,12 @@
 ﻿@page "/personal"
 @code {
     TeamsApplication app;
-    string status = "N/A";
 }
-<TeamsApplication @ref="this.app" Initialized='() => { this.status = "Initialized!"; }' />
+<TeamsApplication @ref="this.app">
+    <ApplicationTemplate Context="facade">
 
-<h3>Personal Page (Server)</h3>
-<p>
-    Status: @this.status
-</p>
+        <h3>Personal Page (Server)</h3>
+
+        <ContextViewer Context="facade?.Context"></ContextViewer>
+    </ApplicationTemplate>
+</TeamsApplication>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using SharedComponents.JsInterop;
+using SharedComponents.Api;
 using SharedComponents.Model;
 using System;
 using System.Collections.Generic;
@@ -15,29 +15,39 @@ namespace SharedComponents
     {
         public TeamsApplication()
         {
-            this.AutoInitialize = true;
         }
 
+        private TeamsApplicationFacade FacadeBuilder = new TeamsApplicationFacade();
+
+        protected TeamsApplicationFacade ApplicationFacade
+        {
+            get;
+            private set;
+        }
 
 
         [Parameter]
         public EventCallback<EventArgs> Initialized { get; set; }
 
         [Parameter]
-        public bool AutoInitialize { get; set; }
+        public RenderFragment<TeamsApplicationFacade> ApplicationTemplate { get; set; }
 
 
-
-        public async Task InitializeAsync()
-        {
-            await this.JsInterop.InvokeVoidAsync("blazorTeams.initialize", DotNetObjectReference.Create(this), nameof(OnAppInitializedAsync));
-        }
 
         [JSInvokable]
         public async Task OnAppInitializedAsync()
         {
             await this.JsInterop.InvokeVoidAsync("microsoftTeams.appInitialization.notifySuccess");
             await this.Initialized.InvokeAsync(EventArgs.Empty);
+
+            await this.GetContextAsync();
+        }
+
+        [JSInvokable]
+        public async Task OnGotContextAsync(JsonElement args)
+        {
+            this.FacadeBuilder.Context = new Context(args);
+            this.FinalizeApplicationFacade();
         }
 
 
@@ -48,16 +58,31 @@ namespace SharedComponents
 
 
 
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-
-            if(firstRender && this.AutoInitialize)
+            if(firstRender)
             {
                 await this.InitializeAsync();
-                //await this.MicrosoftTeams.AppInitialization.NotifySuccessAsync();
             }
         }
+
+
+        private void FinalizeApplicationFacade()
+        {
+            this.ApplicationFacade = this.FacadeBuilder;
+            this.StateHasChanged();
+        }
+
+        private async Task GetContextAsync()
+        {
+            await this.JsInterop.InvokeVoidAsync("blazorTeams.getContext", DotNetObjectReference.Create(this), nameof(OnGotContextAsync));
+        }
+
+        private async Task InitializeAsync()
+        {
+            await this.JsInterop.InvokeVoidAsync("blazorTeams.initialize", DotNetObjectReference.Create(this), nameof(OnAppInitializedAsync));
+        }
+
     }
 }

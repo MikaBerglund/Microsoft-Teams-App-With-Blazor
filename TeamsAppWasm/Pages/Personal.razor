@@ -3,6 +3,13 @@
     TeamsApplication app;
 
 }
-<TeamsApplication @ref="this.app" AutoInitialize="true" />
 
-<h3>Personal Page (WASM)</h3>
+<TeamsApplication @ref="this.app">
+    <ApplicationTemplate Context="facade">
+        <h3>Personal Page (WASM)</h3>
+
+        <ContextViewer Context="facade?.Context"></ContextViewer>
+    </ApplicationTemplate>
+</TeamsApplication>
+
+

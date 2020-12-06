@@ -1,1 +1,5 @@
 ﻿
+@if(null != this.ApplicationFacade)
+{
+    @this.ApplicationTemplate(this.ApplicationFacade);
+}

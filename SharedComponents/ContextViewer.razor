@@ -1,0 +1,18 @@
+﻿
+@code {
+
+}
+
+@if (null != this.Context)
+{
+    <ul>
+        <li>Locale: @this.Context.Locale</li>
+        <li>Login Hint: @this.Context.LoginHint</li>
+        <li>Session Id: @this.Context.SessionId</li>
+        <li>Team Site Domain: @this.Context.TeamSiteDomain</li>
+        <li>Tenant Id: @this.Context.TenantId</li>
+        <li>Theme: @this.Context.Theme</li>
+        <li>User Object Id: @this.Context.UserObjectId</li>
+        <li>User Principal Name: @this.Context.UserPrincipalName</li>
+    </ul>
+}
