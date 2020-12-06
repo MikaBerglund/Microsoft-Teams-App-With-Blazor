@@ -20,11 +20,21 @@ namespace SharedComponents
         [Parameter]
         public Context Context { get; set; }
 
+        [Parameter]
+        public string ErrorCode { get; set; }
+
+        [Parameter]
+        public string ErrorDescription { get; set; }
+
+        [Parameter]
+        public string ErrorUrl { get; set; }
+
         [Inject]
         protected IJSRuntime JsInterop { get; set; }
 
         [Inject]
         protected NavigationManager NavMan { get; set; }
+
 
 
 
@@ -38,14 +48,58 @@ namespace SharedComponents
                 
                 if(string.IsNullOrEmpty(uri.Fragment))
                 {
-                    await this.JsInterop.InvokeVoidAsync("blazorTeams.redirectToAuthority", Guid.NewGuid(), Guid.NewGuid());
+                    var state = Guid.NewGuid().ToString();
+                    var nonce = Guid.NewGuid().ToString();
+                    await this.JsInterop.SetAuthStateAsync(state);
+                    await this.JsInterop.InvokeVoidAsync("blazorTeams.redirectToAuthority", nonce, state);
                 }
                 else
                 {
                     var parameters = uri.ParseFragment();
-                    await this.JsInterop.InvokeVoidAsync("microsoftTeams.authentication.notifySuccess");
+                    bool success = false;
+                    bool displayError = false;
+
+                    var storedState = await this.JsInterop.GetAuthStateAsync();
+                    if(storedState == parameters.GetValue("state"))
+                    {
+                        if (!parameters.ContainsKey("error"))
+                        {
+                            await this.JsInterop.SetTokenExpiresInAsync(parameters.GetValue("expires_in"));
+                            await this.JsInterop.SetAccessTokenAsync(parameters.GetValue("access_token"));
+                            await this.JsInterop.SetIdTokenAsync(parameters.GetValue("id_token"));
+
+                            
+                            success = true;
+                        }
+                        else
+                        {
+                            this.ErrorCode = parameters.GetValue("error");
+                            this.ErrorDescription = parameters.GetValue("error_description");
+                            this.ErrorUrl = parameters.GetValue("error_uri");
+
+                            displayError = true;
+                        }
+
+                        await this.JsInterop.SetAuthStateAsync(null);
+                    }
+
+                    if(success)
+                    {
+                        await this.JsInterop.InvokeVoidAsync("microsoftTeams.authentication.notifySuccess");
+                    }
+                    else if(!displayError)
+                    {
+                        await this.JsInterop.InvokeVoidAsync("microsoftTeams.authentication.notifyFailure");
+                    }
+                    else
+                    {
+                        this.StateHasChanged();
+                    }
                 }
             }
         }
+
+
+        
     }
 }

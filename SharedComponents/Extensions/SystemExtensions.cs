@@ -7,6 +7,16 @@ namespace SharedComponents.Extensions
     public static class SystemExtensions
     {
 
+        public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            if(dictionary.ContainsKey(key))
+            {
+                return dictionary[key];
+            }
+
+            return default;
+        }
+
         public static IDictionary<string, string> ParseFragment(this Uri uri)
         {
             var dict = new Dictionary<string, string>();

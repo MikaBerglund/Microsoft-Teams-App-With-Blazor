@@ -1,8 +1,24 @@
-﻿@if (null != this.ChildContent)
+﻿@if (string.IsNullOrEmpty(this.ErrorCode))
 {
-    @this.ChildContent
+    @if (null != this.ChildContent)
+    {
+        @this.ChildContent
+    }
+    else
+    {
+        <p>Processing authentication...</p>
+    }
 }
 else
 {
-    <p>Processing authentication...</p>
+    <p>
+        <span>@this.ErrorCode</span><span> : </span><span>@this.ErrorDescription</span>
+    </p>
+    @if (!string.IsNullOrEmpty(this.ErrorUrl))
+    {
+        <p>
+            <a href="@this.ErrorUrl" target="_blank">Read more...</a>
+        </p>
+    }
+
 }
