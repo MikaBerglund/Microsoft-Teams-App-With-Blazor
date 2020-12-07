@@ -8,8 +8,4 @@
     <ProjectReference Include="..\SharedComponents\SharedComponents.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="xcopy /C /R /Y &quot;$(SolutionDir)node_modules\@microsoft\teams-js\dist\MicrosoftTeams.min.js&quot; &quot;$(ProjectDir)wwwroot\js&quot;" />
-  </Target>
-
 </Project>
