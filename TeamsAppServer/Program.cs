@@ -22,6 +22,10 @@ namespace TeamsAppServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureAppConfiguration((host, builder) =>
+                    {
+                        builder.AddJsonFile("appsettings.local.json", true);
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

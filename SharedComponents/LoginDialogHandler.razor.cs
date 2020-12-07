@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SharedComponents.Api;
+using SharedComponents.Configuration;
 using SharedComponents.Extensions;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,9 @@ namespace SharedComponents
         protected IJSRuntime JsInterop { get; set; }
 
         [Inject]
+        protected BlazorTeamsAppOptions Options { get; set; }
+
+        [Inject]
         protected NavigationManager NavMan { get; set; }
 
 
@@ -50,8 +54,7 @@ namespace SharedComponents
                 {
                     var state = Guid.NewGuid().ToString();
                     var nonce = Guid.NewGuid().ToString();
-                    await this.JsInterop.SetAuthStateAsync(state);
-                    await this.JsInterop.InvokeVoidAsync("blazorTeams.redirectToAuthority", nonce, state);
+                    await this.JsInterop.RedirectToAuthorityAsync(this.Options, nonce, state);
                 }
                 else
                 {

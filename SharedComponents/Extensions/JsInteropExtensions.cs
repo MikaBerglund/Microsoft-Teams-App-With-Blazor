@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using SharedComponents.Configuration;
 using SharedComponents.Model;
 using System;
 using System.Collections.Generic;
@@ -125,7 +126,6 @@ namespace SharedComponents.Extensions
 
 
 
-
         #region App Initialization Module
 
         public static async Task AppInitializationNotifyAppLoadedAsync(this IJSRuntime interop)
@@ -147,9 +147,15 @@ namespace SharedComponents.Extensions
 
         #region Authentication
 
-        public static async Task AuthenticateAsync(this IJSRuntime interop, object callbackTarget, string methodName)
+        public static async Task AuthenticateAsync(this IJSRuntime interop, BlazorTeamsAppOptions options , object callbackTarget, string methodName)
         {
-            await interop.InvokeVoidAsync("blazorTeams.authenticate", DotNetObjectReference.Create(callbackTarget), methodName);
+            await interop.InvokeVoidAsync("blazorTeams.authenticate", options, DotNetObjectReference.Create(callbackTarget), methodName);
+        }
+
+        public static async Task RedirectToAuthorityAsync(this IJSRuntime interop, BlazorTeamsAppOptions options, string nonce, string state)
+        {
+            await interop.SetAuthStateAsync(state);
+            await interop.InvokeVoidAsync("blazorTeams.redirectToAuthority", options, nonce, state);
         }
 
         #endregion
