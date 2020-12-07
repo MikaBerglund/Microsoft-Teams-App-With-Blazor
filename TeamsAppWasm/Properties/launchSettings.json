@@ -19,6 +19,7 @@
     "TeamsAppWasm": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "personal",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

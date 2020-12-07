@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SharedComponents.Api;
+using SharedComponents.Configuration;
 using SharedComponents.Extensions;
 using SharedComponents.Model;
 using System;
@@ -35,9 +36,13 @@ namespace SharedComponents
 
 
 
+        [Inject]
+        protected BlazorTeamsAppOptions Options { get; set; }
+
+
         public async Task SignInAsync()
         {
-            await this.JsInterop.AuthenticateAsync(this, nameof(OnSignedInAsync));
+            await this.JsInterop.AuthenticateAsync(this.Options, this, nameof(OnSignedInAsync));
         }
 
         public async Task SignOutAsync()
