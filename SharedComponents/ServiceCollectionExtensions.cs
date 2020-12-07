@@ -8,20 +8,18 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensions
     {
 
-        public static IServiceCollection AddBlazorTeamsApp(this IServiceCollection services, Action<BlazorTeamsAppOptions> configure = null)
+        public static IServiceCollection AddBlazorTeamsApp(this IServiceCollection services)
+        {
+
+            return services;
+        }
+
+        public static IServiceCollection AddBlazorTeamsApp(this IServiceCollection services, Action<BlazorTeamsAppOptions> configure)
         {
             BlazorTeamsAppOptions options = new BlazorTeamsAppOptions();
             configure?.Invoke(options);
             return services
-                .AddSingleton(provider =>
-                {
-                    if(null != configure)
-                    {
-                        return options;
-                    }
-
-                    return provider.GetService<BlazorTeamsAppOptions>() ?? options;
-                })
+                .AddSingleton(options)
                 ;
         }
 
