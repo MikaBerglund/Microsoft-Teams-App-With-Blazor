@@ -20,14 +20,23 @@ namespace SharedComponents
         public TeamsApplication()
         {
             this.ApplicationContext = new BlazorAppContext();
+            this.CheckHost = true;
         }
 
         protected BlazorAppContext ApplicationContext { get; private set; }
 
         protected bool ShowSignInTemplate { get; set; }
 
+        protected bool IsHostFound { get; set; }
+
         [Parameter]
         public RenderFragment<BlazorAppContext> ApplicationTemplate { get; set; }
+
+        [Parameter]
+        public bool CheckHost { get; set; }
+
+        [Parameter]
+        public RenderFragment HostNotFoundTemplate { get; set; }
 
         [Parameter]
         public RenderFragment<BlazorAppContext> SignInTemplate { get; set; }
@@ -92,7 +101,15 @@ namespace SharedComponents
             await base.OnAfterRenderAsync(firstRender);
             if(firstRender)
             {
-                await this.TeamsInterop.InitializeAsync(this.OnAppInitializedAsync);
+                this.IsHostFound = !this.CheckHost || await this.TeamsInterop.IsHostFoundAsync();
+                if(this.IsHostFound)
+                {
+                    await this.TeamsInterop.InitializeAsync(this.OnAppInitializedAsync);
+                }
+                else
+                {
+                    this.StateHasChanged();
+                }
             }
 
         }
