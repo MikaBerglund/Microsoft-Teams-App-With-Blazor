@@ -24,7 +24,7 @@ namespace SharedComponents
 
         protected BlazorAppContext ApplicationContext { get; private set; }
 
-        protected bool ShowAuthentication { get; set; }
+        protected bool ShowSignInTemplate { get; set; }
 
         [Parameter]
         public RenderFragment<BlazorAppContext> ApplicationTemplate { get; set; }
@@ -38,7 +38,7 @@ namespace SharedComponents
 
 
         [Inject]
-        protected IJSRuntime JsInterop { get; set; }
+        protected TokenStorageInterop TokenStorage { get; set; }
 
         [Inject]
         protected BlazorTeamsAppOptions Options { get; set; }
@@ -55,8 +55,8 @@ namespace SharedComponents
 
         public async Task SignOutAsync()
         {
-            await this.JsInterop.ClearTokensAsync();
-            this.ShowAuthentication = this.RequireAuthentication;
+            await this.TokenStorage.ClearTokensAsync();
+            this.ShowSignInTemplate = this.RequireAuthentication;
 
             this.StateHasChanged();
         }
@@ -72,10 +72,7 @@ namespace SharedComponents
         [JSInvokable]
         public async Task OnSignedInAsync()
         {
-            var tokensValid = await this.JsInterop.IsAuthTokenValidAsync();
-            this.ShowAuthentication = this.RequireAuthentication && !tokensValid;
-
-            this.StateHasChanged();
+            await this.HandleSignInTemplateAsync();
         }
 
         [JSInvokable]
@@ -83,22 +80,10 @@ namespace SharedComponents
         {
             this.ApplicationContext.Context = context;
 
-            if(this.RequireAuthentication)
-            {
+            await this.HandleSignInTemplateAsync();
 
-                await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
-            }
-            else
-            {
-                await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
-            }
-
-            this.StateHasChanged();
+            await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
         }
-
-
-
-
 
 
 
@@ -110,6 +95,15 @@ namespace SharedComponents
                 await this.TeamsInterop.InitializeAsync(this.OnAppInitializedAsync);
             }
 
+        }
+
+
+
+        private async Task HandleSignInTemplateAsync()
+        {
+            var tokensValid = await this.TokenStorage.IsAuthTokenValidAsync();
+            this.ShowSignInTemplate = this.RequireAuthentication && !tokensValid;
+            this.StateHasChanged();
         }
 
     }

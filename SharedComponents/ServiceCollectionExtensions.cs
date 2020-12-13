@@ -13,6 +13,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services
                 .AddScoped<MicrosoftTeamsInterop>()
+                .AddScoped<LocalStorageInterop>()
+                .AddScoped<TokenStorageInterop>()
                 ;
         }
 

@@ -31,11 +31,16 @@ namespace SharedComponents
         [Parameter]
         public string ErrorUrl { get; set; }
 
+
+
         [Inject]
         protected MicrosoftTeamsInterop TeamsInterop { get; set; }
 
         [Inject]
-        protected IJSRuntime JsInterop { get; set; }
+        protected LocalStorageInterop LocalStorage { get; set; }
+
+        [Inject]
+        protected TokenStorageInterop TokenStorage { get; set; }
 
         [Inject]
         protected BlazorTeamsAppOptions Options { get; set; }
@@ -64,15 +69,14 @@ namespace SharedComponents
                     bool success = false;
                     bool displayError = false;
 
-                    var storedState = await this.JsInterop.GetAuthStateAsync();
+                    var storedState = await this.TokenStorage.GetAuthStateAsync();
                     if(storedState == parameters.GetValue("state"))
                     {
                         if (!parameters.ContainsKey("error"))
                         {
-                            await this.JsInterop.SetTokenExpiresInAsync(parameters.GetValue("expires_in"));
-                            await this.JsInterop.SetAccessTokenAsync(parameters.GetValue("access_token"));
-                            await this.JsInterop.SetIdTokenAsync(parameters.GetValue("id_token"));
-
+                            await this.TokenStorage.SetTokenExpiresInAsync(parameters.GetValue("expires_in"));
+                            await this.TokenStorage.SetAccessTokenAsync(parameters.GetValue("access_token"));
+                            await this.TokenStorage.SetIdTokenAsync(parameters.GetValue("id_token"));
                             
                             success = true;
                         }
@@ -85,16 +89,16 @@ namespace SharedComponents
                             displayError = true;
                         }
 
-                        await this.JsInterop.SetAuthStateAsync(null);
+                        await this.TokenStorage.SetAuthStateAsync(null);
                     }
 
                     if(success)
                     {
-                        await this.JsInterop.InvokeVoidAsync("microsoftTeams.authentication.notifySuccess");
+                        await this.TeamsInterop.Authentication.NotifySuccessAsync();
                     }
                     else if(!displayError)
                     {
-                        await this.JsInterop.InvokeVoidAsync("microsoftTeams.authentication.notifyFailure");
+                        await this.TeamsInterop.Authentication.NofityFailureAsync();
                     }
                     else
                     {

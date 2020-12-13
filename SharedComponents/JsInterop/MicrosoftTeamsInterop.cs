@@ -11,9 +11,12 @@ namespace SharedComponents.JsInterop
 {
     public class MicrosoftTeamsInterop : MicrosoftTeamsInteropModule
     {
-        public MicrosoftTeamsInterop(IJSRuntime interopRuntime, BlazorTeamsAppOptions options) : base(interopRuntime, options)
+        public MicrosoftTeamsInterop(IJSRuntime interopRuntime, BlazorTeamsAppOptions options, TokenStorageInterop tokenStorage) : base(interopRuntime, options)
         {
+            this.TokenStorage = tokenStorage ?? throw new ArgumentNullException(nameof(tokenStorage));
         }
+
+        private TokenStorageInterop TokenStorage { get; }
 
         private MicrosoftTeamsAppInitializationInterop _AppInitialization;
 
@@ -37,7 +40,7 @@ namespace SharedComponents.JsInterop
             {
                 if(null == _Authentication)
                 {
-                    _Authentication = new MicrosoftTeamsAuthenticationInterop(this.Interop, this.Options);
+                    _Authentication = new MicrosoftTeamsAuthenticationInterop(this.Interop, this.Options, this.TokenStorage);
                 }
                 return _Authentication;
             }
