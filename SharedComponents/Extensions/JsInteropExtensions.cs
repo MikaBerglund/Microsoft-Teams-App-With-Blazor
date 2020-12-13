@@ -124,41 +124,5 @@ namespace SharedComponents.Extensions
 
         #endregion
 
-
-
-        #region App Initialization Module
-
-        public static async Task AppInitializationNotifyAppLoadedAsync(this IJSRuntime interop)
-        {
-            await interop.InvokeVoidAsync("microsoftTeams.appInitialization.notifyAppLoaded");
-        }
-
-        public static async Task AppInitializationNotifyFailureAsync(this IJSRuntime interop, FailedRequest failedRequest = null)
-        {
-            await interop.InvokeVoidAsync("microsoftTeams.appInitialization.notifyFailure", failedRequest ?? new FailedRequest { });
-        }
-
-        public static async Task AppInitializationNotifySuccessAsync(this IJSRuntime interop)
-        {
-            await interop.InvokeVoidAsync("microsoftTeams.appInitialization.notifySuccess");
-        }
-
-        #endregion
-
-        #region Authentication
-
-        public static async Task AuthenticateAsync(this IJSRuntime interop, BlazorTeamsAppOptions options , object callbackTarget, string methodName)
-        {
-            await interop.InvokeVoidAsync("blazorTeams.authenticate", options, DotNetObjectReference.Create(callbackTarget), methodName);
-        }
-
-        public static async Task RedirectToAuthorityAsync(this IJSRuntime interop, BlazorTeamsAppOptions options, string nonce, string state)
-        {
-            await interop.SetAuthStateAsync(state);
-            await interop.InvokeVoidAsync("blazorTeams.redirectToAuthority", options, nonce, state);
-        }
-
-        #endregion
-
     }
 }

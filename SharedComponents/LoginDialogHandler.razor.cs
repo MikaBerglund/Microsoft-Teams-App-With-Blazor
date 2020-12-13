@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using SharedComponents.Api;
 using SharedComponents.Configuration;
 using SharedComponents.Extensions;
+using SharedComponents.JsInterop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,9 @@ namespace SharedComponents
         public string ErrorUrl { get; set; }
 
         [Inject]
+        protected MicrosoftTeamsInterop TeamsInterop { get; set; }
+
+        [Inject]
         protected IJSRuntime JsInterop { get; set; }
 
         [Inject]
@@ -52,9 +56,7 @@ namespace SharedComponents
                 
                 if(string.IsNullOrEmpty(uri.Fragment))
                 {
-                    var state = Guid.NewGuid().ToString();
-                    var nonce = Guid.NewGuid().ToString();
-                    await this.JsInterop.RedirectToAuthorityAsync(this.Options, nonce, state);
+                    await this.TeamsInterop.Authentication.RedirectToAuthorityAsync(this.Options);// .JsInterop.RedirectToAuthorityAsync(this.Options, nonce, state);
                 }
                 else
                 {

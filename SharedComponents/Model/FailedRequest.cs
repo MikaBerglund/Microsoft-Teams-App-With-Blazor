@@ -7,7 +7,7 @@ namespace SharedComponents.Model
     public class FailedRequest
     {
 
-        public string message { get; set; }
+        public string Mmessage { get; set; }
 
     }
 }

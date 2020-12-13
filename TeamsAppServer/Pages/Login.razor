@@ -1,10 +1,10 @@
 ﻿@page "/login"
 
 <TeamsApplication>
-    <ApplicationTemplate Context="facade">
-        <LoginDialogHandler Context="@facade?.Context">
+    <ApplicationTemplate Context="ctx">
+        <LoginDialogHandler Context="@ctx?.Context">
             <p>
-                Processing authentication for @(facade?.Context?.LoginHint)...
+                Processing authentication for @(ctx?.Context?.LoginHint)...
             </p>
         </LoginDialogHandler>
     </ApplicationTemplate>

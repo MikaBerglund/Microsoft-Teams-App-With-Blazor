@@ -11,6 +11,7 @@ namespace SharedComponents.Configuration
             this.ClientId = Guid.Empty.ToString();
             this.LoginUrl = "/login";
             this.Scopes = new string[] { "user.read", "openid" };
+            this.TenantId = "common";
         }
 
         public string ClientId { get; set; }
@@ -18,6 +19,8 @@ namespace SharedComponents.Configuration
         public string LoginUrl { get; set; }
 
         public ICollection<string> Scopes { get; set; }
+
+        public string TenantId { get; set; }
 
     }
 }
