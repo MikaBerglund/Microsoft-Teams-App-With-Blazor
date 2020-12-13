@@ -2,8 +2,6 @@
 window.blazorTeams = {
     authentication: {
         authenticate: function (options, callback) {
-            console.log("Authenticating...", options);
-
             microsoftTeams.authentication.authenticate({
                 url: window.location.origin + options.loginUrl,
                 successCallback: function (result) {
@@ -45,6 +43,9 @@ window.blazorTeams = {
                 microsoftTeams.appInitialization.notifySuccess();
             }
         });
-    }
+    },
 
+    isHostFound: function () {
+        return window.parent !== window.self && microsoftTeams !== undefined;
+    }
 };

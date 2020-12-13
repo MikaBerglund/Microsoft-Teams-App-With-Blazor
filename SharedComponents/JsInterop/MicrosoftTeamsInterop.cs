@@ -59,6 +59,11 @@ namespace SharedComponents.JsInterop
             await this.Interop.InvokeVoidAsync("blazorTeams.initialize", CallbackDefinition.Create(callback.Target, callback.Method.Name));
         }
 
+        public async Task<bool> IsHostFoundAsync()
+        {
+            var result = await this.Interop.InvokeAsync<bool>("blazorTeams.isHostFound");
+            return result;
+        }
 
 
         private void AssertCallbackMethod(MethodInfo method)

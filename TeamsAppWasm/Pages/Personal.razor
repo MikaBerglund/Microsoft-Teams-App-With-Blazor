@@ -5,12 +5,7 @@
 }
 
 <TeamsApplication @ref="this.app" RequireAuthentication="true">
-    <SignInTemplate Context="ctx">
-        <p>We need you to log in before you can use this application. Click the button below to do so.</p>
-        <button @onclick="async () => { await this.app.SignInAsync(); }">Log in as @ctx?.Context?.LoginHint</button>
-    </SignInTemplate>
     <ApplicationTemplate Context="ctx">
-
         <h3>Personal Page (WASM)</h3>
 
         <ContextViewer Context="ctx?.Context"></ContextViewer>

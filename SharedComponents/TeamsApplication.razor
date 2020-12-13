@@ -1,19 +1,36 @@
 ﻿
-@if (this.ShowSignInTemplate)
+@if (this.IsHostFound)
 {
-    @if(null != this.SignInTemplate)
+    if (this.ShowSignInTemplate)
     {
-        @this.SignInTemplate(this.ApplicationContext);
+        if (null != this.SignInTemplate)
+        {
+            @this.SignInTemplate(this.ApplicationContext)
+        }
+        else
+        {
+            string loginText = this?.ApplicationContext?.Context?.LoginHint?.Length > 0 ? $"Log in as {this.ApplicationContext.Context.LoginHint}" : "Log in";
+
+            <p>This application requires that you log in. Click the button below to start the sign in process.</p>
+            <button @onclick="async () => { await this.SignInAsync(); }">@loginText</button>
+        }
+    }
+    else if (null != this.ApplicationContext)
+    {
+        @this.ApplicationTemplate(this.ApplicationContext)
+    }
+}
+else
+{
+    if(null != this.HostNotFoundTemplate)
+    {
+        @this.HostNotFoundTemplate
     }
     else
     {
-        string loginText = this?.ApplicationContext?.Context?.LoginHint?.Length > 0 ? $"Log in as {this.ApplicationContext.Context.LoginHint}" : "Log in";
-
-        <p>This application requires that you log in. Click the button below to start the sign in process.</p>
-        <button @onclick="async () => { await this.SignInAsync(); }">@loginText</button>
+        <p>
+            The application loaded properly. However, the application is designed to be run as a Microsoft Teams tab application, so you
+            cannot run it as a standalone web application.
+        </p>
     }
-}
-else if (null != this.ApplicationContext)
-{
-    @this.ApplicationTemplate(this.ApplicationContext);
 }
