@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using SharedComponents.Api;
 using SharedComponents.Configuration;
 using SharedComponents.Extensions;
+using SharedComponents.JsInterop;
 using SharedComponents.Model;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace SharedComponents
 
         protected BlazorAppContext ApplicationContext { get; private set; }
 
-        protected bool ShowAuthentication { get; set; }
+        protected bool ShowSignInTemplate { get; set; }
 
         [Parameter]
         public RenderFragment<BlazorAppContext> ApplicationTemplate { get; set; }
@@ -37,58 +38,53 @@ namespace SharedComponents
 
 
         [Inject]
+        protected TokenStorageInterop TokenStorage { get; set; }
+
+        [Inject]
         protected BlazorTeamsAppOptions Options { get; set; }
+
+        [Inject]
+        protected MicrosoftTeamsInterop TeamsInterop { get; set; }
+
 
 
         public async Task SignInAsync()
         {
-            await this.JsInterop.AuthenticateAsync(this.Options, this, nameof(OnSignedInAsync));
+            await this.TeamsInterop.Authentication.AuthenticateAsync(this.Options, this.OnSignedInAsync);
         }
 
         public async Task SignOutAsync()
         {
-            await this.JsInterop.ClearTokensAsync();
-            await this.GetContextAsync();
+            await this.TokenStorage.ClearTokensAsync();
+            this.ShowSignInTemplate = this.RequireAuthentication;
+
+            this.StateHasChanged();
         }
+
+
 
         [JSInvokable]
         public async Task OnAppInitializedAsync()
         {
-            await this.JsInterop.AppInitializationNotifyAppLoadedAsync();
-            await this.GetContextAsync();
+            await this.TeamsInterop.GetContextAsync(this.OnGotContextAsync);
         }
 
         [JSInvokable]
         public async Task OnSignedInAsync()
         {
-            await this.HandleTokensAsync();
-            this.StateHasChanged();
+            await this.HandleSignInTemplateAsync();
         }
 
         [JSInvokable]
-        public async Task OnGotContextAsync(JsonElement args)
+        public async Task OnGotContextAsync(Context context)
         {
-            this.ApplicationContext.Context = new Context(args);
+            this.ApplicationContext.Context = context;
 
-            await this.HandleTokensAsync();
+            await this.HandleSignInTemplateAsync();
 
-            await this.JsInterop.AppInitializationNotifySuccessAsync();
-
-            this.StateHasChanged();
+            await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
         }
 
-
-
-        [Inject]
-        protected IJSRuntime JsInterop { get; set; }
-
-
-
-        protected async override Task OnParametersSetAsync()
-        {
-            await base.OnParametersSetAsync();
-            this.ShowAuthentication = this.RequireAuthentication;
-        }
 
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -96,46 +92,18 @@ namespace SharedComponents
             await base.OnAfterRenderAsync(firstRender);
             if(firstRender)
             {
-                await this.InitializeAsync();
+                await this.TeamsInterop.InitializeAsync(this.OnAppInitializedAsync);
             }
+
         }
 
 
-        private async Task GetContextAsync()
-        {
-            await this.JsInterop.InvokeVoidAsync("blazorTeams.getContext", DotNetObjectReference.Create(this), nameof(OnGotContextAsync));
-        }
 
-        private async Task HandleTokensAsync()
+        private async Task HandleSignInTemplateAsync()
         {
-            this.ApplicationContext.TokenCache = null;
-            if (this.RequireAuthentication)
-            {
-                var accessToken = await this.JsInterop.GetAccessTokenAsync();
-                var idToken = await this.JsInterop.GetIdTokenAsync();
-                var expires = await this.JsInterop.GetTokenExpiresUtcAsync();
-
-                var isTokenValid = expires.HasValue && expires.Value > DateTime.UtcNow && accessToken?.Length > 0 && idToken?.Length > 0;
-                this.ShowAuthentication = !isTokenValid;
-                if (isTokenValid)
-                {
-                    this.ApplicationContext.TokenCache = new TokenCache
-                    {
-                        AccessToken = accessToken,
-                        IdToken = idToken,
-                        ExpireUtc = expires.Value
-                    };
-                }
-            }
-            else
-            {
-                this.ShowAuthentication = false;
-            }
-        }
-
-        private async Task InitializeAsync()
-        {
-            await this.JsInterop.InvokeVoidAsync("blazorTeams.initialize", DotNetObjectReference.Create(this), nameof(OnAppInitializedAsync));
+            var tokensValid = await this.TokenStorage.IsAuthTokenValidAsync();
+            this.ShowSignInTemplate = this.RequireAuthentication && !tokensValid;
+            this.StateHasChanged();
         }
 
     }

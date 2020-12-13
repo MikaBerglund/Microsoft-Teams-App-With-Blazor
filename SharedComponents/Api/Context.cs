@@ -8,19 +8,6 @@ namespace SharedComponents.Api
 {
     public class Context
     {
-        public Context() { }
-
-        public Context(JsonElement json)
-        {
-            this.Locale = json.TryGetPropertyAsString("locale");
-            this.LoginHint = json.TryGetPropertyAsString("loginHint");
-            this.SessionId = json.TryGetPropertyAsString("sessionId");
-            this.Theme = json.TryGetPropertyAsString("theme");
-            this.TeamSiteDomain = json.TryGetPropertyAsString("teamSiteDomain");
-            this.TenantId = json.TryGetPropertyAsString("tid");
-            this.UserObjectId = json.TryGetPropertyAsString("userObjectId");
-            this.UserPrincipalName = json.TryGetPropertyAsString("userPrincipalName");
-        }
 
         public string Locale { get; set; }
 
@@ -32,7 +19,7 @@ namespace SharedComponents.Api
 
         public string TeamSiteDomain { get; set; }
 
-        public string TenantId { get; set; }
+        public string Tid { get; set; }
 
         public string UserObjectId { get; set; }
 
